@@ -63,4 +63,4 @@ data:
               type: cephfs
 
       monitoring:
-        enabled: true
+        enabled: false
