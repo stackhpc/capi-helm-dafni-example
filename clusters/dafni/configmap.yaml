@@ -1,0 +1,66 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cluster-dafni-config
+  namespace: capi-self
+data:
+  values.yaml: |
+    # Must match the name of the (sealed) secret in credentials.yaml
+    cloudCredentialsSecretName: cluster-dafni-credentials
+
+    kubernetesVersion: 1.28.7
+    machineImageId: 7288e8a2-976a-4b53-8b10-0be864c94af8  # capi-ubuntu-2004-kube-v1.28.7-2024-03-01
+
+    clusterNetworking:
+      externalNetworkId: 5283f642-8bd8-48b6-8608-fa3006ff4539
+
+    kubeNetwork:
+      pods:
+        cidrBlocks:
+          - 10.0.0.0/13
+      services:
+        cidrBlocks:
+          - 10.8.0.0/13
+
+    apiServer:
+      floatingIP: "130.246.80.197"
+
+    registryMirrors:
+      docker.io:
+        - https://dockerhub.stfc.ac.uk
+
+    controlPlane:
+      machineFlavor: l3.nano
+      machineCount: 3
+
+    nodeGroups:
+      - name: md-0
+        machineFlavor: l3.micro
+        machineCount: 2
+
+    addons:
+      cni:
+        type: cilium
+        cilium:
+          release:
+            values:
+              gatewayAPI:
+                enabled: true
+
+      csi:
+        cephfs:
+          enabled: true
+
+      openstack:
+        csiCinder:
+          defaultStorageClass:
+            availabilityZone: ceph
+        csiManila:
+          enabled: true
+          defaultStorageClass:
+            parameters:
+              type: cephfs
+
+      monitoring:
+        enabled: true

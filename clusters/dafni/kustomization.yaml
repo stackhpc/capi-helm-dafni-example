@@ -1,0 +1,26 @@
+resources:
+  - ../../components/flux
+  - ../../components/sealed-secrets
+  - ../../components/cluster-api
+  - ../../components/cluster
+  - configmap.yaml
+  - credentials.yaml
+
+# Patch the Helm release for the cluster to update the release name
+#   This ensures we get nicely named resources in OpenStack
+# We also add our configmap to the values sources for the release
+patches:
+  - target:
+      kind: HelmRelease
+      name: cluster
+    patch: |-
+      - op: replace
+        path: /spec/releaseName
+        value: dafni
+
+      - op: add
+        path: /spec/valuesFrom/-
+        value:
+          kind: ConfigMap
+          name: cluster-dafni-config
+          valuesKey: values.yaml
