@@ -37,7 +37,7 @@ data:
     nodeGroups:
       - name: md-0
         machineFlavor: l3.micro
-        machineCount: 2
+        machineCount: 3
 
     addons:
       cni:
